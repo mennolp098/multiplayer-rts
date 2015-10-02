@@ -16,8 +16,13 @@ public class JoinMatchButton : MonoBehaviour {
 	public void SetMatch (MatchDesc info) {
 		_myMatchDesc = info;
 		_myText.text = _myMatchDesc.name;
+		GetComponent<Button>().onClick.AddListener(() => JoinMatch());
 	}
-	
+	private void JoinMatch()
+	{
+		ConnectionHandler _connectionHandler = GameObject.FindGameObjectWithTag(Tags.CONNECTIONHANDLER).GetComponent<ConnectionHandler>();
+		_connectionHandler.JoinGame(_myMatchDesc);
+	}
 	public void SetPosition(Vector2 pos)
 	{
 		_myTransform.anchoredPosition = pos;
