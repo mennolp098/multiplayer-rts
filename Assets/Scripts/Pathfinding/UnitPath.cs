@@ -1,16 +1,19 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Pathfinding;
 
+[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(LineRenderer))]
 public class UnitPath : MonoBehaviour {
 
     public const float NEXT_WAYPOINT_DISTANCE = 1.15f;
 
-
-    private Path currentPath;
+    private List<Vector3> currentPath;
     private Seeker seeker;
     private CharacterController controller;
+    private LineRenderer lineRenderer;
 
-    private int currentPathPoint = 0;
     private bool movementState = true;
     private bool pathReached = false;
 
@@ -21,6 +24,7 @@ public class UnitPath : MonoBehaviour {
     {
         seeker = GetComponent<Seeker>();
         controller = GetComponent<CharacterController>();
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     private void Update()
@@ -28,15 +32,19 @@ public class UnitPath : MonoBehaviour {
         if (!movementState || currentPath == null || pathReached)
             return;
 
-        Vector3 dir = (currentPath.vectorPath[currentPathPoint] - transform.position).normalized;
+        Vector3 dir = (currentPath[0] - transform.position).normalized;
         dir *= movementSpeed * Time.deltaTime;
         controller.SimpleMove(dir);
 
-        if (Vector3.Distance(transform.position, currentPath.vectorPath[currentPathPoint]) < NEXT_WAYPOINT_DISTANCE)
+        if (Vector3.Distance(transform.position, currentPath[0]) < NEXT_WAYPOINT_DISTANCE)
         {
-            currentPathPoint++;
-            if (currentPathPoint >= currentPath.vectorPath.Count)
+            currentPath.Remove(currentPath[0]);
+            UpdatePathLine();
+            if (currentPath.Count <= 0)
+            {
+                lineRenderer.enabled = false;
                 pathReached = true;
+            }
         }
     }
 
@@ -44,11 +52,13 @@ public class UnitPath : MonoBehaviour {
     {
         if(currentPath != null)
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(currentPath.vectorPath[currentPath.vectorPath.Count - 1], 1f);
+            if (currentPath.Count > 0)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(currentPath[currentPath.Count - 1], 1f);
+            }
         }
     }
-
 
     public void SetDestination(Vector3 point)
     {
@@ -63,12 +73,24 @@ public class UnitPath : MonoBehaviour {
         }
         else
         {
-            currentPath = path;
-            currentPathPoint = 0;
+            currentPath = path.vectorPath;
             pathReached = false;
+
+            lineRenderer.enabled = true;
+            UpdatePathLine();
         }
     }
-    
+
+    private void UpdatePathLine()
+    {
+        lineRenderer.SetVertexCount(currentPath.Count);
+        for (int i = 0; i < currentPath.Count; i++)
+        {
+            lineRenderer.SetPosition(i, currentPath[i]);
+        }
+    }
+
+
     public void SetMovementActive(bool state)
     {
         movementState = state;
