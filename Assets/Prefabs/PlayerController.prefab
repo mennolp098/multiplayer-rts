@@ -1,40 +1,39 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &183528
+--- !u!1 &111178
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 485554}
-  - 114: {fileID: 11401730}
-  - 114: {fileID: 11492020}
+  - 4: {fileID: 402702}
+  - 114: {fileID: 11430828}
   m_Layer: 0
-  m_Name: NetworkLobbyPlayer
+  m_Name: PlayerController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &485554
+--- !u!4 &402702
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 183528}
+  m_GameObject: {fileID: 111178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 215.437057, y: 126.766022, z: 46.4838257}
+  m_LocalPosition: {x: 206.479065, y: 138.793274, z: -32.84375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11401730
+--- !u!114 &11430828
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 183528}
+  m_GameObject: {fileID: 111178}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
@@ -43,36 +42,24 @@ MonoBehaviour:
   m_SceneId:
     m_Value: 0
   m_AssetId:
-    i0: 228
-    i1: 219
-    i2: 123
-    i3: 229
-    i4: 228
-    i5: 89
-    i6: 215
-    i7: 228
-    i8: 203
-    i9: 94
-    i10: 56
-    i11: 104
-    i12: 33
-    i13: 64
-    i14: 25
-    i15: 178
+    i0: 92
+    i1: 172
+    i2: 251
+    i3: 21
+    i4: 252
+    i5: 105
+    i6: 8
+    i7: 84
+    i8: 170
+    i9: 27
+    i10: 25
+    i11: 225
+    i12: 150
+    i13: 187
+    i14: 202
+    i15: 145
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
---- !u!114 &11492020
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 183528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 246975512, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLobbyGUI: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -82,5 +69,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 183528}
+  m_RootGameObject: {fileID: 111178}
   m_IsPrefabParent: 1

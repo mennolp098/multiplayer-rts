@@ -22,6 +22,7 @@ public class JoinMatchButton : MonoBehaviour {
 	{
 		ConnectionHandler _connectionHandler = GameObject.FindGameObjectWithTag(Tags.CONNECTIONHANDLER).GetComponent<ConnectionHandler>();
 		_connectionHandler.JoinGame(_myMatchDesc);
+		GameObject.FindGameObjectWithTag(Tags.MENU).SetActive(false);
 	}
 	public void SetPosition(Vector2 pos)
 	{

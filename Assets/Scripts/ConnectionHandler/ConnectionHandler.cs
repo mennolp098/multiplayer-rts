@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
+using UnityEngine.Networking.Types;
 
 public class ConnectionHandler : NetworkLobbyManager {
 	public delegate void ConnectionDelegate(NetworkConnection conn);
@@ -50,7 +51,7 @@ public class ConnectionHandler : NetworkLobbyManager {
 	}
 	public override void OnServerConnect(NetworkConnection conn)
 	{
-		Debug.Log("ServerConnected");
+		Debug.Log("ServerConnected at: " + conn.address);
 		if(OnPlayerConnect != null)
 			OnPlayerConnect(conn);
 	}
