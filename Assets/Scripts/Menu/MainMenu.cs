@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Networking;
@@ -12,29 +13,45 @@ public class MainMenu : MonoBehaviour {
 
 	private ConnectionHandler _myConnectionHandler;
 	private List<GameObject> _allServers = new List<GameObject>();
-	private List<MatchDesc> _allMatches = new List<MatchDesc>(); 
 	void Awake()
 	{
 		_myConnectionHandler = GameObject.FindGameObjectWithTag(Tags.CONNECTIONHANDLER).GetComponent<ConnectionHandler>();
+		_myConnectionHandler.OnMatchesRetrieved += GenerateJoinButtons;
 	}
 
 	public void HostButtonPressed()
 	{
-		_myConnectionHandler.HostGame(hostNameInputField.text);
+		if(hostNameInputField.text != "")
+		{
+			_myConnectionHandler.HostGame(hostNameInputField.text);
+			gameObject.SetActive(false);
+		} else {
+			Debug.LogError("Server needs a name");
+		}
 	}
 
 	public void RefreshButtonPressed()
 	{
-		_allMatches = _myConnectionHandler.GetCurrentMatches();
+		_myConnectionHandler.GetCurrentMatches();
+	}
 
-		if(_allMatches.Count != 0)
+	public void GenerateJoinButtons()
+	{
+		foreach(GameObject serverButton in _allServers)
 		{
-			for(int i = 0; i < _allMatches.Count; i++)
+			Destroy(serverButton);
+		}
+		_allServers.Clear();
+
+		List<MatchDesc> matches = _myConnectionHandler.matches;
+		if((matches != null) && matches.Count != 0)
+		{
+			for(int i = 0; i < matches.Count; i++)
 			{
 				GameObject newServerBut = Instantiate(joinMatchButton, new Vector3(0,0,0),Quaternion.identity) as GameObject;
 				newServerBut.transform.SetParent(joinMenu.transform);
-				newServerBut.GetComponent<JoinMatchButton>().SetMatch(_allMatches[i]);
-				newServerBut.GetComponent<JoinMatchButton>().SetPosition(new Vector3(250,-190 + i * -40,0));
+				newServerBut.GetComponent<JoinMatchButton>().SetMatch(matches[i]);
+				newServerBut.GetComponent<JoinMatchButton>().SetPosition(new Vector3(0,0 + i * -20,0));
 				_allServers.Add(newServerBut);
 			}
 		}

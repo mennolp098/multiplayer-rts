@@ -9,16 +9,14 @@ public class UnitPathingController : MonoBehaviour
     {
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(1))
             {
-                GameObject[] units = GameObject.FindGameObjectsWithTag("SelectedUnit");
+                GameObject[] units = GameObject.FindGameObjectsWithTag(Tags.SELECTED_ENTITY);
+                
                 for (int i = 0; i < units.Length; i++)
                 {
-                    Vector3 destination = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-                    //destination = new Vector3(Random.Range(0, 20), 6, Random.Range(0, 20));
-                    units[i].GetComponent<UnitPath>().SetDestination(destination);
+                    units[i].GetComponent<UnitPath>().SetDestination(hit.point);
                 }
-
             }
         }
     }

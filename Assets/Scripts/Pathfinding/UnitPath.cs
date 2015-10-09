@@ -42,7 +42,6 @@ public class UnitPath : MonoBehaviour {
             UpdatePathLine();
             if (currentPath.Count <= 0)
             {
-                lineRenderer.enabled = false;
                 pathReached = true;
             }
         }
@@ -60,6 +59,14 @@ public class UnitPath : MonoBehaviour {
         }
     }
 
+    public void SetUnitInfo(Unit entity)
+    {
+        this.movementSpeed = entity.movementSpeed;
+        entity.OnSelect += ShowLine;
+        entity.OnDeselect += HideLine;
+    }
+
+
     public void SetDestination(Vector3 point)
     {
         seeker.StartPath(transform.position, point, ReceivePath);
@@ -75,8 +82,6 @@ public class UnitPath : MonoBehaviour {
         {
             currentPath = path.vectorPath;
             pathReached = false;
-
-            lineRenderer.enabled = true;
             UpdatePathLine();
         }
     }
@@ -90,6 +95,15 @@ public class UnitPath : MonoBehaviour {
         }
     }
 
+    private void ShowLine()
+    {
+        lineRenderer.enabled = true;
+    }
+
+    private void HideLine()
+    {
+        lineRenderer.enabled = false;
+    }
 
     public void SetMovementActive(bool state)
     {

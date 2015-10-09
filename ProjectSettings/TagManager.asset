@@ -4,7 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - SelectedUnit
+  - SelectedEntity
+  - UnselectedEntity
+  - Ground
   layers:
   - Default
   - TransparentFX
