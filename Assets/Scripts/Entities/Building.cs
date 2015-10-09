@@ -35,17 +35,6 @@ public class Building : Entity
     private new void Update()
     {
         base.Update();
-
-        if (!_built)
-            UnbuiltBehaviour();
-    }
-
-    private void UnbuiltBehaviour()
-    {
-        if (CheckBuildPosition())
-            _buildingModel.GetComponent<Renderer>().material.color = Color.green;
-        else
-            _buildingModel.GetComponent<Renderer>().material.color = Color.red;
     }
 
     public bool CheckBuildPosition()
@@ -67,6 +56,11 @@ public class Building : Entity
             }
         }
         return result;
+    }
+
+    public void SetModelColor(Color color)
+    {
+        _buildingModel.GetComponent<Renderer>().material.color = color;
     }
 
 }

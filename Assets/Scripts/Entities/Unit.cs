@@ -15,10 +15,6 @@ public class Unit : Entity
     private new void Update()
     {
         base.Update();
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            DealDamage(15);
-        }
     }
 
 }
