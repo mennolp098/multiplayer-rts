@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using Pathfinding;
+using UnityEngine.Networking;
 
 public class UnitPathingController : MonoBehaviour
 {
@@ -15,7 +16,8 @@ public class UnitPathingController : MonoBehaviour
                 
                 for (int i = 0; i < units.Length; i++)
                 {
-                    units[i].GetComponent<UnitPath>().SetDestination(hit.point);
+					if(units[i].GetComponent<NetworkIdentity>().hasAuthority)
+                    	units[i].GetComponent<UnitPath>().CmdGiveDestination(hit.point);
                 }
             }
         }

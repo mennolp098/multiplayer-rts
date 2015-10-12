@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
 public enum EntityType
 {
@@ -14,6 +15,7 @@ public class Entity : MonoBehaviour {
     protected int _teamID;
     protected EntityType _type;
     protected bool _selected;
+	protected NetworkIdentity _myNetworkIdentity;
 
     public delegate void EntityEventDelegate();
     public EntityEventDelegate OnDamageReceive;
@@ -22,6 +24,8 @@ public class Entity : MonoBehaviour {
 
     public void Init()
     {
+		_myNetworkIdentity = GetComponent<NetworkIdentity>();
+
         if (GetType() == typeof(Unit))
             _type = EntityType.Unit;
         else if (GetType() == typeof(Building))

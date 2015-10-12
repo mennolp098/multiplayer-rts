@@ -5,35 +5,50 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 using UnityEngine.Networking.Types;
 
-public class ConnectionHandler : NetworkLobbyManager {
+public class ConnectionHandler : NetworkManager {
+	public delegate void ConnectionPlayerIdDelegate(NetworkConnection conn, short playerControllerId);
 	public delegate void ConnectionDelegate(NetworkConnection conn);
 	public delegate void NormalDelegate();
+	public event ConnectionPlayerIdDelegate OnPlayerAdded;
 	public event ConnectionDelegate OnClientConnected;
 	public event ConnectionDelegate OnServerReadyUp;
 	public event ConnectionDelegate OnPlayerConnect;
 	public event ConnectionDelegate OnPlayerDisconnect;
 	public event NormalDelegate OnMatchesRetrieved;
 
+	public bool isMatchmakingEnabled;
+
 	void Start()
 	{
 		//start matchmaker when scene is initialised
-		/*
-		StartMatchMaker();
-		AppID appid;
-		appid = (AppID)94451;
-		matchMaker.SetProgramAppID(appid);
-		*/
+		if(isMatchmakingEnabled)
+		{
+			StartMatchMaker();
+			//AppID appid;
+			//appid = (AppID)94451;
+			//matchMaker.SetProgramAppID(appid);
+		}
 	}
 
 	public void HostGame(string roomName)
 	{
 		//set hostname + host game with default options
-		matchName = roomName;
-		matchMaker.CreateMatch(roomName, 4, true, "", OnMatchCreate);
+		if(isMatchmakingEnabled) //match maker
+		{
+			matchName = roomName;
+			matchMaker.CreateMatch(roomName, 4, true, "", OnMatchCreate);
+		} else { //lan start host
+			StartHost();
+		}
 	}
-	public void JoinGame(MatchDesc matchDescription)
+	public void JoinGame(MatchDesc matchDescription = null)
 	{
-		matchMaker.JoinMatch(matchDescription.networkId, "", OnMatchJoined);
+		if(isMatchmakingEnabled && matchDescription != null) //matchmaker
+		{
+			matchMaker.JoinMatch(matchDescription.networkId, "", OnMatchJoined);
+		} else { //lan start client
+			StartClient();
+		}
 	}
 
 	public void GetCurrentMatches()
@@ -41,7 +56,7 @@ public class ConnectionHandler : NetworkLobbyManager {
 		//refresh the match list
 		matchMaker.ListMatches(0,20, "", OnMatchList);
 	}
-
+	
 	//All network events
 	public override void OnMatchList (ListMatchResponse matchList)
 	{
@@ -49,6 +64,14 @@ public class ConnectionHandler : NetworkLobbyManager {
 		if(OnMatchesRetrieved != null)
 			OnMatchesRetrieved();
 	}
+
+	public override void OnServerAddPlayer (NetworkConnection conn, short playerControllerId)
+	{
+		base.OnServerAddPlayer (conn, playerControllerId);
+		if(OnPlayerAdded != null)
+			OnPlayerAdded(conn, playerControllerId);
+	}
+
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		base.OnClientConnect(conn);

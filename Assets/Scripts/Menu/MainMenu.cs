@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour {
 	public InputField hostNameInputField;
 	public GameObject joinMatchButton;
 	public GameObject joinMenu;
+	public GameObject startMenu;
 
 	private ConnectionHandler _myConnectionHandler;
 	private List<GameObject> _allServers = new List<GameObject>();
@@ -29,7 +30,18 @@ public class MainMenu : MonoBehaviour {
 			Debug.LogError("Server needs a name");
 		}
 	}
-
+	public void JoinButtonPressed()
+	{
+		if(_myConnectionHandler.isMatchmakingEnabled)
+		{
+			RefreshButtonPressed();
+			joinMenu.SetActive(true);
+			startMenu.SetActive(false);
+		} else {
+			this.gameObject.SetActive(false);
+			_myConnectionHandler.JoinGame();
+		}
+	}
 	public void RefreshButtonPressed()
 	{
 		_myConnectionHandler.GetCurrentMatches();

@@ -7,6 +7,11 @@ TagManager:
   - SelectedEntity
   - UnselectedEntity
   - Ground
+  - ConnectionHandler
+  - Menu
+  - UnselectedUnit
+  - SpawnPoint
+  - RoomManager
   layers:
   - Default
   - TransparentFX

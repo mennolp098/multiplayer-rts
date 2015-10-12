@@ -72,6 +72,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a53ec8ec55df0e4ea0f348b7b8ee2f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isReadyToBegin: 0
+  builder: {fileID: 169466, guid: bc8339d2384922b44a09062cdbeb1dba, type: 2}
+  room: {fileID: 149338, guid: 70f8d6222c5d3994da070b6780ac31e4, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -83,6 +86,14 @@ Prefab:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: builder
+      value: 
+      objectReference: {fileID: 169466, guid: bc8339d2384922b44a09062cdbeb1dba, type: 2}
+    - target: {fileID: 0}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 149338, guid: 70f8d6222c5d3994da070b6780ac31e4, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 111178}

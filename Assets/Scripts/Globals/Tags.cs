@@ -10,5 +10,7 @@ public class Tags : MonoBehaviour {
 	public const string MENU = "Menu";
 	public const string PLAYER = "Player";
     public const string GROUND = "Ground";
+	public const string SPAWNPOINT = "SpawnPoint";
+	public const string ROOMMANAGER = "RoomManager";
 }
     
