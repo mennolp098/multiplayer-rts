@@ -20,7 +20,7 @@ public class LobbyManager : NetworkBehaviour {
         if (_myNetworkIdentity.isServer)
         {
             _connectionHandler = GameObject.FindGameObjectWithTag(Tags.CONNECTIONHANDLER).GetComponent<ConnectionHandler>();
-            GameObject newRoom = Instantiate(room, Vector3.zero, Quaternion.identity) as gameObject;
+            GameObject newRoom = Instantiate(room, Vector3.zero, Quaternion.identity) as GameObject;
             NetworkServer.Spawn(newRoom);
             _roomManager = GameObject.FindGameObjectWithTag(Tags.ROOMMANAGER).GetComponent<RoomManager>();
             _connectionHandler.OnPlayerAdded += AddPlayerController;

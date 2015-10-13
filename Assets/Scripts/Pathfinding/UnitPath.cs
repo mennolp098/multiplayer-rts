@@ -3,6 +3,14 @@ using UnityEngine;
 using Pathfinding;
 using UnityEngine.Networking;
 
+public enum ActionType
+{
+    None,
+    Move,
+    Attack,
+    Build
+}
+
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(LineRenderer))]
@@ -10,77 +18,93 @@ using UnityEngine.Networking;
 public class UnitPath : NetworkBehaviour {
 
     public const float NEXT_WAYPOINT_DISTANCE = 1.15f;
+    
+    private NetworkIdentity _myNetworkIdentity;
+    private List<Vector3> _currentPath;
+    private Seeker _seeker;
+    private CharacterController _controller;
+    private LineRenderer _lineRenderer;
 
-	private NetworkIdentity _myNetworkIdentity;
-    private List<Vector3> currentPath;
-    private Seeker seeker;
-    private CharacterController controller;
-    private LineRenderer lineRenderer;
-
-    private bool movementState = true;
-    private bool pathReached = false;
+    private bool _movementState = true;
+    private bool _pathReached = false;
+    private ActionType _actionType = ActionType.None;
 
     //make unit stat class
-    private float movementSpeed = 300f;
+    private float _movementSpeed = 300f;
+
+    public delegate void UnitMovementEvent(ActionType actionType, Entity target = null);
+    public UnitMovementEvent OnDestinationReached;
+    public UnitMovementEvent OnNewDestination;
 
     private void Start()
     {
-		_myNetworkIdentity = GetComponent<NetworkIdentity>();
-        seeker = GetComponent<Seeker>();
-        controller = GetComponent<CharacterController>();
-        lineRenderer = GetComponent<LineRenderer>();
+        _myNetworkIdentity = GetComponent<NetworkIdentity>();
+        _seeker = GetComponent<Seeker>();
+        _controller = GetComponent<CharacterController>();
+        _lineRenderer = GetComponent<LineRenderer>();
+        _movementSpeed = GetComponent<Unit>().movementSpeed;
     }
 
     private void Update()
     {
-        if (!movementState || currentPath == null || pathReached)
+        if (!_movementState || _currentPath == null || _pathReached)
             return;
 
-        Vector3 dir = (currentPath[0] - transform.position).normalized;
-        dir *= movementSpeed * Time.deltaTime;
-        controller.SimpleMove(dir);
+        Vector3 dir = (_currentPath[0] - transform.position).normalized;
+        dir *= _movementSpeed * Time.deltaTime;
+        _controller.SimpleMove(dir);
 
-        if (Vector3.Distance(transform.position, currentPath[0]) < NEXT_WAYPOINT_DISTANCE)
+        if (Vector3.Distance(transform.position, _currentPath[0]) < NEXT_WAYPOINT_DISTANCE)
         {
+<<<<<<< HEAD
+            _currentPath.Remove(_currentPath[0]);
+            UpdatePathLine();
+            if (_currentPath.Count <= 0)
+=======
             currentPath.Remove(currentPath[0]);
 
             if(_myNetworkIdentity.hasAuthority)
                 UpdatePathLine();
 
             if (currentPath.Count <= 0)
+>>>>>>> 01a62de76d1f391a1c4957e9a307c071c6ec3c63
             {
-                pathReached = true;
+                _pathReached = true;
+                if (OnDestinationReached != null)
+                    OnDestinationReached(_actionType);
             }
         }
     }
 
     private void OnDrawGizmos()
     {
-        if(currentPath != null)
+        if(_currentPath != null)
         {
-            if (currentPath.Count > 0)
+            if (_currentPath.Count > 0)
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawSphere(currentPath[currentPath.Count - 1], 1f);
+                Gizmos.DrawSphere(_currentPath[_currentPath.Count - 1], 1f);
             }
         }
     }
 
     public void SetUnitInfo(Unit entity)
     {
-        this.movementSpeed = entity.movementSpeed;
-		if(_myNetworkIdentity.hasAuthority)
-		{
-	        entity.OnSelect += ShowLine;
-	        entity.OnDeselect += HideLine;
-		}
+        this._movementSpeed = entity.movementSpeed;
+        entity.OnSelect += ShowLine;
+        entity.OnDeselect += HideLine;
     }
 
 	//Setting destination on unit for all clients
 	[ClientRpc]
     public void RpcSetDestination(Vector3 point)
     {
-        seeker.StartPath(transform.position, point, ReceivePath);
+        _seeker.StartPath(transform.position, point, ReceivePath);
+       // _actionType = actionType;
+
+        //TODO: fix type + target
+        if (OnNewDestination != null)
+            OnNewDestination(ActionType.Move);
     }
 
 	//Giving the position to the server so he can tell every client what the new destination will be
@@ -98,34 +122,34 @@ public class UnitPath : NetworkBehaviour {
         }
         else
         {
-            currentPath = path.vectorPath;
-            pathReached = false;
+            _currentPath = path.vectorPath;
+            _pathReached = false;
             UpdatePathLine();
         }
     }
 
     private void UpdatePathLine()
     {
-        lineRenderer.SetVertexCount(currentPath.Count);
-        for (int i = 0; i < currentPath.Count; i++)
+        _lineRenderer.SetVertexCount(_currentPath.Count);
+        for (int i = 0; i < _currentPath.Count; i++)
         {
-            lineRenderer.SetPosition(i, currentPath[i]);
+            _lineRenderer.SetPosition(i, _currentPath[i]);
         }
     }
 
     private void ShowLine()
     {
-        lineRenderer.enabled = true;
+        _lineRenderer.enabled = true;
     }
 
     private void HideLine()
     {
-        lineRenderer.enabled = false;
+        _lineRenderer.enabled = false;
     }
 
     public void SetMovementActive(bool state)
     {
-        movementState = state;
+        _movementState = state;
     }
     
 }
