@@ -22,10 +22,10 @@ public class NetworkPlayerController : NetworkBehaviour {
 	void Start()
 	{
 		/*
-		if(_myNetworkIdentity.isServer)
+		if(_myNetworkIdentity.isServer && _myNetworkIdentity.hasAuthority)
 		{
 			GameObject newRoom = Instantiate(room, Vector3.zero, Quaternion.identity) as GameObject;
-			NetworkServer.Spawn(newRoom);
+			NetworkServer.SpawnWithClientAuthority(newRoom, _myNetworkIdentity.connectionToClient);
 		}
 		if(_myNetworkIdentity.hasAuthority)
 		{

@@ -43,7 +43,10 @@ public class UnitPath : NetworkBehaviour {
         if (Vector3.Distance(transform.position, currentPath[0]) < NEXT_WAYPOINT_DISTANCE)
         {
             currentPath.Remove(currentPath[0]);
-            UpdatePathLine();
+
+            if(_myNetworkIdentity.hasAuthority)
+                UpdatePathLine();
+
             if (currentPath.Count <= 0)
             {
                 pathReached = true;
