@@ -34,6 +34,7 @@ GameObject:
   - 120: {fileID: 12017826}
   - 114: {fileID: 11420674}
   - 114: {fileID: 11472070}
+  - 114: {fileID: 11403470}
   m_Layer: 0
   m_Name: Builder
   m_TagString: UnselectedUnit
@@ -151,6 +152,38 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 0
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &11403470
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 169466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 188
+    i1: 131
+    i2: 57
+    i3: 210
+    i4: 56
+    i5: 73
+    i6: 34
+    i7: 180
+    i8: 74
+    i9: 9
+    i10: 6
+    i11: 44
+    i12: 219
+    i13: 235
+    i14: 29
+    i15: 186
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
 --- !u!114 &11420674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -533,7 +566,19 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_SendInterval
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_StateSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPlayerAuthority
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 169466}

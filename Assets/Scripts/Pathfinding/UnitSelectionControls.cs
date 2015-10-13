@@ -103,7 +103,7 @@ public class UnitSelectionControls : MonoBehaviour
                 for (int i = 0; i < units.Length; i++)
                 {
                     if(units[i].GetComponent<UnitPath>() != null)
-                        units[i].GetComponent<UnitPath>().SetDestination(_hit.point, type, entity);
+                        units[i].GetComponent<UnitPath>().CmdGiveDestination(_hit.point); //TODO: fix type & target
                 }
             }
         }

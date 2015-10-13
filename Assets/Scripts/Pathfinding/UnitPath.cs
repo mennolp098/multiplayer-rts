@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using UnityEngine.Networking;
 
 public enum ActionType
 {
@@ -13,10 +14,12 @@ public enum ActionType
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(LineRenderer))]
-public class UnitPath : MonoBehaviour {
+[RequireComponent(typeof(NetworkIdentity))]
+public class UnitPath : NetworkBehaviour {
 
     public const float NEXT_WAYPOINT_DISTANCE = 1.15f;
-
+    
+    private NetworkIdentity _myNetworkIdentity;
     private List<Vector3> _currentPath;
     private Seeker _seeker;
     private CharacterController _controller;
@@ -35,6 +38,7 @@ public class UnitPath : MonoBehaviour {
 
     private void Start()
     {
+        _myNetworkIdentity = GetComponent<NetworkIdentity>();
         _seeker = GetComponent<Seeker>();
         _controller = GetComponent<CharacterController>();
         _lineRenderer = GetComponent<LineRenderer>();
@@ -82,14 +86,24 @@ public class UnitPath : MonoBehaviour {
         entity.OnDeselect += HideLine;
     }
 
-    public void SetDestination(Vector3 point, ActionType actionType, Entity target)
+	//Setting destination on unit for all clients
+	[ClientRpc]
+    public void RpcSetDestination(Vector3 point)
     {
         _seeker.StartPath(transform.position, point, ReceivePath);
-        _actionType = actionType;
+       // _actionType = actionType;
 
+        //TODO: fix type + target
         if (OnNewDestination != null)
-            OnNewDestination(actionType, target);
+            OnNewDestination(ActionType.Move);
     }
+
+	//Giving the position to the server so he can tell every client what the new destination will be
+	[Command]
+	public void CmdGiveDestination(Vector3 point)
+	{
+		RpcSetDestination(point);
+	}
 
     private void ReceivePath(Path path)
     {

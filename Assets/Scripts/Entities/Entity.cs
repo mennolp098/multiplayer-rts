@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
 public enum EntityType
 {
@@ -26,6 +27,7 @@ public class Entity : MonoBehaviour {
     protected bool _selected;
     protected bool _mouseOver = false;
     protected bool _isInSelectionBox = false;
+	protected NetworkIdentity _myNetworkIdentity;
 
     public delegate void EntityEventDelegate();
     public delegate void EntityValueChangeEvent(int addition);
@@ -37,6 +39,8 @@ public class Entity : MonoBehaviour {
 
     protected void Init()
     {
+		_myNetworkIdentity = GetComponent<NetworkIdentity>();
+
         if (GetType() == typeof(Unit))
             _type = EntityType.Unit;
         else if (GetType() == typeof(Building))
