@@ -8,30 +8,26 @@ public class NetworkPlayerController : NetworkBehaviour {
 	private NetworkIdentity _myNetworkIdentity;
 	private Vector3 _spawnPoint = new Vector3(0,0,0);
 
+    public string username;
+    public int connectionID;
 	public bool isReadyToBegin = false;
 	public GameObject builder;
-	public GameObject room;
+	
 
 	void Awake()
 	{
 		_myNetworkIdentity = GetComponent<NetworkIdentity>();
 		ClientScene.RegisterPrefab(builder);
-		ClientScene.RegisterPrefab(room);
 	}
 
 	void Start()
 	{
-		/*
-		if(_myNetworkIdentity.isServer && _myNetworkIdentity.hasAuthority)
-		{
-			GameObject newRoom = Instantiate(room, Vector3.zero, Quaternion.identity) as GameObject;
-			NetworkServer.SpawnWithClientAuthority(newRoom, _myNetworkIdentity.connectionToClient);
-		}
+		
 		if(_myNetworkIdentity.hasAuthority)
-		{
-			string username = PlayerPrefs.GetString("Username");
-			GameObject.FindGameObjectWithTag(Tags.ROOMMANAGER).GetComponent<RoomManager>().CmdGetUsername(_myNetworkIdentity.connectionToClient.connectionId, username);
-		} */
+        {
+            connectionID = _myNetworkIdentity.connectionToClient.connectionId;
+            username = PlayerPrefs.GetString("Username");
+        }
 	}
 
 	[Command]
