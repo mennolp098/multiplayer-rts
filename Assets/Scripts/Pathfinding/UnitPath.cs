@@ -2,6 +2,14 @@
 using UnityEngine;
 using Pathfinding;
 
+public enum ActionType
+{
+    None,
+    Move,
+    Attack,
+    Build
+}
+
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(LineRenderer))]
@@ -9,67 +17,78 @@ public class UnitPath : MonoBehaviour {
 
     public const float NEXT_WAYPOINT_DISTANCE = 1.15f;
 
-    private List<Vector3> currentPath;
-    private Seeker seeker;
-    private CharacterController controller;
-    private LineRenderer lineRenderer;
+    private List<Vector3> _currentPath;
+    private Seeker _seeker;
+    private CharacterController _controller;
+    private LineRenderer _lineRenderer;
 
-    private bool movementState = true;
-    private bool pathReached = false;
+    private bool _movementState = true;
+    private bool _pathReached = false;
+    private ActionType _actionType = ActionType.None;
 
     //make unit stat class
-    private float movementSpeed = 300f;
+    private float _movementSpeed = 300f;
+
+    public delegate void UnitMovementEvent(ActionType actionType, Entity target = null);
+    public UnitMovementEvent OnDestinationReached;
+    public UnitMovementEvent OnNewDestination;
 
     private void Start()
     {
-        seeker = GetComponent<Seeker>();
-        controller = GetComponent<CharacterController>();
-        lineRenderer = GetComponent<LineRenderer>();
+        _seeker = GetComponent<Seeker>();
+        _controller = GetComponent<CharacterController>();
+        _lineRenderer = GetComponent<LineRenderer>();
+        _movementSpeed = GetComponent<Unit>().movementSpeed;
     }
 
     private void Update()
     {
-        if (!movementState || currentPath == null || pathReached)
+        if (!_movementState || _currentPath == null || _pathReached)
             return;
 
-        Vector3 dir = (currentPath[0] - transform.position).normalized;
-        dir *= movementSpeed * Time.deltaTime;
-        controller.SimpleMove(dir);
+        Vector3 dir = (_currentPath[0] - transform.position).normalized;
+        dir *= _movementSpeed * Time.deltaTime;
+        _controller.SimpleMove(dir);
 
-        if (Vector3.Distance(transform.position, currentPath[0]) < NEXT_WAYPOINT_DISTANCE)
+        if (Vector3.Distance(transform.position, _currentPath[0]) < NEXT_WAYPOINT_DISTANCE)
         {
-            currentPath.Remove(currentPath[0]);
+            _currentPath.Remove(_currentPath[0]);
             UpdatePathLine();
-            if (currentPath.Count <= 0)
+            if (_currentPath.Count <= 0)
             {
-                pathReached = true;
+                _pathReached = true;
+                if (OnDestinationReached != null)
+                    OnDestinationReached(_actionType);
             }
         }
     }
 
     private void OnDrawGizmos()
     {
-        if(currentPath != null)
+        if(_currentPath != null)
         {
-            if (currentPath.Count > 0)
+            if (_currentPath.Count > 0)
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawSphere(currentPath[currentPath.Count - 1], 1f);
+                Gizmos.DrawSphere(_currentPath[_currentPath.Count - 1], 1f);
             }
         }
     }
 
     public void SetUnitInfo(Unit entity)
     {
-        this.movementSpeed = entity.movementSpeed;
+        this._movementSpeed = entity.movementSpeed;
         entity.OnSelect += ShowLine;
         entity.OnDeselect += HideLine;
     }
 
-
-    public void SetDestination(Vector3 point)
+    public void SetDestination(Vector3 point, ActionType actionType, Entity target)
     {
-        seeker.StartPath(transform.position, point, ReceivePath);
+        _seeker.StartPath(transform.position, point, ReceivePath);
+        _actionType = actionType;
+
+        if (OnNewDestination != null)
+            OnNewDestination(actionType, target);
     }
 
     private void ReceivePath(Path path)
@@ -80,34 +99,34 @@ public class UnitPath : MonoBehaviour {
         }
         else
         {
-            currentPath = path.vectorPath;
-            pathReached = false;
+            _currentPath = path.vectorPath;
+            _pathReached = false;
             UpdatePathLine();
         }
     }
 
     private void UpdatePathLine()
     {
-        lineRenderer.SetVertexCount(currentPath.Count);
-        for (int i = 0; i < currentPath.Count; i++)
+        _lineRenderer.SetVertexCount(_currentPath.Count);
+        for (int i = 0; i < _currentPath.Count; i++)
         {
-            lineRenderer.SetPosition(i, currentPath[i]);
+            _lineRenderer.SetPosition(i, _currentPath[i]);
         }
     }
 
     private void ShowLine()
     {
-        lineRenderer.enabled = true;
+        _lineRenderer.enabled = true;
     }
 
     private void HideLine()
     {
-        lineRenderer.enabled = false;
+        _lineRenderer.enabled = false;
     }
 
     public void SetMovementActive(bool state)
     {
-        movementState = state;
+        _movementState = state;
     }
     
 }

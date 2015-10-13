@@ -6,21 +6,36 @@ public enum EntityType
     Building
 }
 
+public enum ChangeMode
+{
+    Add,
+    Decrease,
+    Set
+}
+
 public class Entity : MonoBehaviour {
 
     [SerializeField] protected string _entityName;
     [SerializeField] protected int _maxHitPoints;
+    [SerializeField] protected int _requiredLabor;
+
     protected int _currentHitPoints;
     protected int _teamID;
+    protected int _currentLabor = 0;
     protected EntityType _type;
     protected bool _selected;
+    protected bool _mouseOver = false;
+    protected bool _isInSelectionBox = false;
 
     public delegate void EntityEventDelegate();
-    public EntityEventDelegate OnDamageReceive;
+    public delegate void EntityValueChangeEvent(int addition);
     public EntityEventDelegate OnSelect;
     public EntityEventDelegate OnDeselect;
 
-    public void Init()
+    public EntityValueChangeEvent OnDamageReceive;
+    public EntityValueChangeEvent OnConstructionProgress;
+
+    protected void Init()
     {
         if (GetType() == typeof(Unit))
             _type = EntityType.Unit;
@@ -40,17 +55,36 @@ public class Entity : MonoBehaviour {
     }
 
     //methods
-    public void DealDamage(int damage)
+    public void ChangeHealth(ChangeMode mode, int changeValue)
     {
-        _currentHitPoints -= damage;
+        //Set
+        switch (mode)
+        {
+            case ChangeMode.Add:
+                _currentHitPoints += changeValue;
+                break;
+            case ChangeMode.Decrease:
+                _currentHitPoints -= changeValue;
+                break;
+            case ChangeMode.Set:
+                _currentHitPoints = changeValue;
+                break;
+        }
+
+        //Checks
+        if (_currentHitPoints > _maxHitPoints)
+        {
+            _currentHitPoints = _maxHitPoints;
+        }
         if (_currentHitPoints <= 0)
         {
             _currentHitPoints = 0;
             //Kill
         }
 
+        //Delegates
         if (OnDamageReceive != null)
-            OnDamageReceive();
+            OnDamageReceive(changeValue);
     }
 
     public void Select()
@@ -75,14 +109,9 @@ public class Entity : MonoBehaviour {
     //Unity events
     protected void Update()
     {
-        if (Input.GetMouseButtonUp(0))
-            if (_mouseOver)
-                Select();
-            else
-                Deselect();
+
     }
 
-    private bool _mouseOver = false;
     private void OnMouseEnter()
     {
         _mouseOver = true;
@@ -102,6 +131,14 @@ public class Entity : MonoBehaviour {
             return _entityName;
         }
     }    
+
+    public EntityType entityType
+    {
+        get
+        {
+            return _type;
+        }
+    }
 
     public int teamID
     {
@@ -142,5 +179,19 @@ public class Entity : MonoBehaviour {
         }
     }
 
+    public int requiredLabor
+    {
+        get
+        {
+            return _requiredLabor;
+        }
+    }
 
+    public int currentLabor
+    {
+        get
+        {
+            return _currentLabor;
+        }
+    }
 }

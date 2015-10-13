@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CameraControls : MonoBehaviour {
 
@@ -14,7 +13,7 @@ public class CameraControls : MonoBehaviour {
         float up = Input.GetAxis("Mouse ScrollWheel") * (Time.deltaTime * scrollSpeed);
 
         transform.parent.Translate(vel);
-        transform.parent.Translate(up * transform.forward);        
+        transform.parent.Translate(up * transform.parent.up);        
     }
 
 }
